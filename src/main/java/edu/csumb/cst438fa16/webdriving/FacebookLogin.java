@@ -12,33 +12,32 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class FacebookLogin {
     public static void main(String[] args) {
         WebDriver driver = new ChromeDriver();
-        driver.get("http://test20160831-env.us-west-2.elasticbeanstalk.com/");
 
-        System.out.println("Page title is: " + driver.getTitle());
-        System.out.println("Page URL is: " + driver.getCurrentUrl());
+        // Replace this URL with yours for the fblogin-webapp on AWS.
+        // Needs to run with your own Facebook test app.
+        driver.get("http://test20160831-env.us-west-2.elasticbeanstalk.com/");
 
         (new WebDriverWait(driver, 10)).until(
             ExpectedConditions.presenceOfElementLocated(
                 By.tagName("fb:login-button")));
 
+        // Title should be Test2 login, url should be .../login.html
         System.out.println("Page title is: " + driver.getTitle());
         System.out.println("Page URL is: " + driver.getCurrentUrl());
 
-        WebElement fbLoginButton =
-            driver.findElement(By.tagName("fb:login-button"));
-        fbLoginButton.click();
-        try {
-            Thread.sleep(4000);
-        } catch(InterruptedException exc) {}
-        for (String handle : driver.getWindowHandles()) {
-            System.out.println("Window handle: " + handle);
-        }
+        driver.findElement(By.tagName("fb:login-button")).click();
+
+        // Await Facebook login pop up window
         (new WebDriverWait(driver, 10)).until(
             ExpectedConditions.numberOfWindowsToBe(2));
+
+        // Switch to Facebook login pop up window
+        String home = driver.getWindowHandle();
         for (String handle : driver.getWindowHandles()) {
             driver.switchTo().window(handle);
             if (driver.getTitle().equals("Facebook")) break;
         }
+        // Title should be Facebook, url should be a Facebook url
         System.out.println("Page title is: " + driver.getTitle());
         System.out.println("Page URL is: " + driver.getCurrentUrl());
 
@@ -50,6 +49,10 @@ public class FacebookLogin {
         element.sendKeys(password);
         element.submit();
 
+        // Switch away from the Facebook pop up window
+        driver.switchTo().window(home);
+
+        // Title should be Facebook Login JavaScript Example, url .../index.hmtl
         System.out.println("Page title is: " + driver.getTitle());
         System.out.println("Page URL is: " + driver.getCurrentUrl());
 
