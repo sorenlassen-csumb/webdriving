@@ -10,12 +10,22 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class FacebookLogin {
+    /*
+       Takes a single argument which is a URL with a Facebook login button
+       and expects Facebook login email and password in system properties
+       fblogin.test.email and fblogin.test.password.
+       With Maven you can run it with this command line:
+       mvn compile exec:java \
+       -Dfblogin.test.email=$TESTUSER -Dfblogin.test.password=$TESTPASSWORD \
+       -Dexec.mainClass=edu.csumb.cst438fa16.webdriving.FacebookLogin \
+       -Dexec.args='http://localhost:8080/login.html'
+    */
     public static void main(String[] args) {
+        System.out.println("URL to get: " + args[0]);
+
         WebDriver driver = new ChromeDriver();
 
-        // Replace this URL with yours for the fblogin-webapp on AWS.
-        // Needs to run with your own Facebook test app.
-        driver.get("http://test20160831-env.us-west-2.elasticbeanstalk.com/");
+        driver.get(args[0]);
 
         (new WebDriverWait(driver, 10)).until(
             ExpectedConditions.presenceOfElementLocated(
